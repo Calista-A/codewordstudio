@@ -65,7 +65,7 @@ var LightPage = function(p) {
         if (showAlphabet.a) p.image(a, p.width/4.22, 2, p.width/1.95, p.height/5);
         if (showAlphabet.b) p.image(b, p.width/20, p.height/5.5, p.width/4.25, p.height/4.21);
         if (showAlphabet.c) p.image(c, p.width/19, p.height/5.3, p.width/17, p.height/2.6);
-        if (showAlphabet.d) p.image(d, p.width / p.width/18, p.height/5.2, p.width/1.85, p.height/1.6);
+        if (showAlphabet.d) p.image(d, p.width/18, p.height/5.2, p.width/1.85, p.height/1.6);
         if (showAlphabet.e) p.image(e, p.width/1.4, p.height/8, p.width/3.6, p.height/2.9);
         if (showAlphabet.f) p.image(f, p.width/1.06, p.height/8, p.width/15, p.height/2.3);
         if (showAlphabet.g) p.image(g, p.width/2.32, p.height/7.85, p.width/1.72, p.height/1.48);
