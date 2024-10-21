@@ -32,7 +32,7 @@ var project1 = function(p) {
         playStopButton.style('cursor', 'pointer');
         playStopButton.style('background-color', 'grey');  
         playStopButton.style('border', 'none');  // Remove button border
-        playStopButton.position(20, p.height - 40);  // Bottom left corner
+        playStopButton.position(20, p.height - 30);  // Bottom left corner
 
         // Toggle play/stop functionality
         playStopButton.mousePressed(function() {
