@@ -1,11 +1,15 @@
+var bgSound;
 var project1 = function(p) {
     let xPos, yPos;
-    let leftGif, rightGif, arrowButton;
+    let leftGif, rightGif, arrowButton, playStopButton;
 
     p.preload = function() {
         leftGif = p.createImg('./data/IMG_2003.GIF');
         rightGif = p.createImg('./data/IMG_2003.GIF');
-    }
+        if (!bgSound) {
+            bgSound = p.loadSound('./data/bg.wav');
+        }
+    };
 
     p.setup = function() {
         p.createCanvas(p.windowWidth, p.windowHeight);
@@ -21,6 +25,25 @@ var project1 = function(p) {
 
         rightGif.position(xPos + p.width / 6, yPos - p.height / 12);
         rightGif.size(p.width / 7, p.height / 7);
+
+        // Play/Stop button to control the background sound
+        playStopButton = p.createButton('Play Sound');
+        playStopButton.style('font-size', '15px');
+        playStopButton.style('cursor', 'pointer');
+        playStopButton.style('background-color', 'grey');  
+        playStopButton.style('border', 'none');  // Remove button border
+        playStopButton.position(20, p.height - 40);  // Bottom left corner
+
+        // Toggle play/stop functionality
+        playStopButton.mousePressed(function() {
+            if (bgSound.isPlaying()) {
+                bgSound.stop();  // Stop the sound
+                playStopButton.html('Play Sound');  // Update button text
+            } else {
+                bgSound.loop();  // Play the sound
+                playStopButton.html('Stop Sound');  // Update button text
+            }
+        });
 
         // Arrow button to switch to the next page
         arrowButton = p.createButton('→');
@@ -54,10 +77,11 @@ var project1 = function(p) {
         leftGif.remove();  // Remove elements related to this sketch
         rightGif.remove();
         arrowButton.remove();
+        playStopButton.remove();
     }
 }
 
 
-
 //whole code is from chat gpt, first builded by co-pilot with trial and errors
+//bgsound button coppied from chat gpt, altered
 //co-pilot helped in positioning text in split lines, with p5js rectMode function debug
