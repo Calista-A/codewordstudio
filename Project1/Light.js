@@ -1,3 +1,4 @@
+var bgSound;
 var LightPage = function(p) {
     let offLt, offLb, offMid, offRt, offRb;
     let onLt, onLb, onMid, onRt, onRb;
@@ -34,12 +35,32 @@ var LightPage = function(p) {
         h = p.loadImage('./data/H.PNG');
         i = p.loadImage('./data/I.PNG');
         j = p.loadImage('./data/J.PNG');
+        
+        bgSound = p.loadSound('./data/bg.wav');
     };
 
     p.setup = function() {
         p.createCanvas(p.windowWidth, p.windowHeight);
         p.background(0);
-    };
+        
+        // Play/Stop button to control the background sound
+        playStopButton = p.createButton('Play Sound');
+        playStopButton.style('font-size', '15px');
+        playStopButton.style('cursor', 'pointer');
+        playStopButton.style('background-color', 'grey');  
+        playStopButton.style('border', 'none');  // Remove button border
+        playStopButton.position(20, p.height - 30);  // Bottom left corner
+
+        // Toggle play/stop functionality
+        playStopButton.mousePressed(function() {
+            if (bgSound.isPlaying()) {
+                bgSound.stop();  // Stop the sound
+                playStopButton.html('Play Sound');  // Update button text
+            } else {
+                bgSound.loop();  // Play the sound
+                playStopButton.html('Stop Sound');  // Update button text
+            }
+        });
 
     p.draw = function() {
         p.background(0);
@@ -82,7 +103,7 @@ var LightPage = function(p) {
         // Lt button area
         if (x > 3 && x < (3 + p.width / 3) && y > 0 && y < p.height / 2.3) toggleButton('Lt');
         // Lb button area
-        else if (x > 0 && x < p.width / 2 && y > p.height / 2 && y < p.height) toggleButton('Lb');
+        else if (x > 21 && x < p.width / 2 && y > p.height / 2 && y < p.height - 31) toggleButton('Lb');
         // Mid button area
         else if (x > p.width / 4 && x < p.width / 2 + p.width / 4 && y > p.height / 3 && y < p.height / 3 + p.height / 3.3) toggleButton('Mid');
         // Rt button area
@@ -132,3 +153,8 @@ var LightPage = function(p) {
         if ((first === 'Rb' && second === 'Lb') || (first === 'Lb' && second === 'Rb')) showAlphabet.j = true;
     }
 };
+}
+
+//starting and positioning
+//function by chatgpt, altered using 2 prompts and mixing them together
+//sound was copied from secondpage.js
