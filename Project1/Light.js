@@ -1,18 +1,12 @@
 var LightPage = function(p) {
     let offLt, offLb, offMid, offRt, offRb;
     let onLt, onLb, onMid, onRt, onRb;
+    let a, b, c, d, e, f, g, h, i, j;
 
-    // Track the state of each button
-    let buttonStates = {
-        Lt: false,  // Initially off
-        Lb: false,  // Initially off
-        Mid: false, // Initially off
-        Rt: false,  // Initially off
-        Rb: false   // Initially off
-    };
-
+    // Track the clicked buttons
     let clickedButtons = [];
-    let connectors = [];
+    let permanentlyOn = [];  // Track buttons that should stay "on" after clicking
+    let showAlphabet = {a: false, b: false, c: false, d: false, e: false, f: false, g: false, h: false, i: false, j: false};
 
     p.preload = function() {
         // Load off button images
@@ -28,6 +22,18 @@ var LightPage = function(p) {
         onMid = p.loadImage('./data/MidOn.PNG');
         onRt = p.loadImage('./data/RtopOn.PNG');
         onRb = p.loadImage('./data/RtomOn.PNG');
+
+        // Load alphabet connectors
+        a = p.loadImage('./data/A.PNG');
+        b = p.loadImage('./data/B.PNG');
+        c = p.loadImage('./data/C.PNG');
+        d = p.loadImage('./data/D.PNG');
+        e = p.loadImage('./data/E.PNG');
+        f = p.loadImage('./data/F.PNG');
+        g = p.loadImage('./data/G.PNG');
+        h = p.loadImage('./data/H.PNG');
+        i = p.loadImage('./data/I.PNG');
+        j = p.loadImage('./data/J.PNG');
     };
 
     p.setup = function() {
@@ -37,93 +43,92 @@ var LightPage = function(p) {
 
     p.draw = function() {
         p.background(0);
+        p.noFill();
+        p.stroke(255);
+        p.strokeWeight(3);
 
-        // Draw buttons based on their state (on or off)
-        drawButton('Lt', 3, 0, p.width / 3, p.height / 2.3, offLt, onLt);
-        drawButton('Lb', 0, p.height / 2, p.width / 2, p.height / 2, offLb, onLb);
-        drawButton('Mid', p.width / 4, p.height / 3, p.width / 2, p.height / 3.3, offMid, onMid);
-        drawButton('Rt', p.width / 1.5, 0, p.width / 3, p.height / 2, offRt, onRt);
-        drawButton('Rb', p.width / 1.805, p.height / 2, p.width / 2.2, p.height / 2, offRb, onRb);
+        // Display off buttons if they are not permanently on
+        if (!permanentlyOn.includes('Lt')) p.image(offLt, 3, 0, p.width / 3, p.height / 2.3);
+        if (!permanentlyOn.includes('Lb')) p.image(offLb, 0, p.height / 2, p.width / 2, p.height / 2);
+        if (!permanentlyOn.includes('Mid')) p.image(offMid, p.width / 4, p.height / 3, p.width / 2, p.height / 3.3);
+        if (!permanentlyOn.includes('Rt')) p.image(offRt, p.width / 1.5, 0, p.width / 3, p.height / 2);
+        if (!permanentlyOn.includes('Rb')) p.image(offRb, p.width / 1.805, p.height / 2, p.width / 2.2, p.height / 2);
 
-        // Draw all connectors that have been activated
-        for (let conn of connectors) {
-            drawConnector(conn.start, conn.end);
-        }
+        // Display on buttons for permanently clicked ones
+        if (permanentlyOn.includes('Lt')) p.image(onLt, 3, 0, p.width/2.5, p.height/2.3);
+        if (permanentlyOn.includes('Lb')) p.image(onLb, 0, p.height/2, p.width/2, p.height/2);
+        if (permanentlyOn.includes('Mid')) p.image(onMid, p.width/4.8, p.height/4.8, p.width/1.79, p.height/1.85);
+        if (permanentlyOn.includes('Rt')) p.image(onRt, p.width/1.5, 0, p.width/3, p.height/2);
+        if (permanentlyOn.includes('Rb')) p.image(onRb, p.width/1.805, p.height/2, p.width/2.2, p.height/2);
+
+        // Display alphabet connectors based on clicks
+        if (showAlphabet.a) p.image(a, p.width/4.22, 2, p.width/1.95, p.height/5);
+        if (showAlphabet.b) p.image(b, p.width/20, p.height/5.5, p.width/4.25, p.height/4.21);
+        if (showAlphabet.c) p.image(c, p.width/19, p.height/5.3, p.width/17, p.height/2.6);
+        if (showAlphabet.d) p.image(d, p.width / p.width/18, p.height/5.2, p.width/1.85, p.height/1.6);
+        if (showAlphabet.e) p.image(e, p.width/1.4, p.height/8, p.width/3.6, p.height/2.9);
+        if (showAlphabet.f) p.image(f, p.width/1.06, p.height/8, p.width/15, p.height/2.3);
+        if (showAlphabet.g) p.image(g, p.width/2.32, p.height/7.85, p.width/1.72, p.height/1.48);
+        if (showAlphabet.h) p.image(h, p.width/13.4, p.height/3.05, p.width/4.7, p.height/4.8);
+        if (showAlphabet.i) p.image(i, p.width/1.38, p.height/2.65, p.width/3.6, p.height/4.7);
+        if (showAlphabet.j) p.image(j, p.width/2.34, p.height/1.33, p.width/5.9, p.height/11.8);
     };
 
     p.mousePressed = function() {
-        // Check for clicks on buttons
+        // Check for clicks on buttons (both off and permanently on)
         let x = p.mouseX;
         let y = p.mouseY;
 
         // Lt button area
-        if (x > 3 && x < (3 + p.width / 3) && y > 0 && y < p.height / 2.3) handleClick('Lt');
+        if (x > 3 && x < (3 + p.width / 3) && y > 0 && y < p.height / 2.3) toggleButton('Lt');
         // Lb button area
-        else if (x > 0 && x < p.width / 2 && y > p.height / 2 && y < p.height) handleClick('Lb');
+        else if (x > 0 && x < p.width / 2 && y > p.height / 2 && y < p.height) toggleButton('Lb');
         // Mid button area
-        else if (x > p.width / 4 && x < p.width / 2 + p.width / 4 && y > p.height / 3 && y < p.height / 3 + p.height / 3.3) handleClick('Mid');
+        else if (x > p.width / 4 && x < p.width / 2 + p.width / 4 && y > p.height / 3 && y < p.height / 3 + p.height / 3.3) toggleButton('Mid');
         // Rt button area
-        else if (x > p.width / 1.5 && x < p.width && y > 0 && y < p.height / 2) handleClick('Rt');
+        else if (x > p.width / 1.5 && x < p.width && y > 0 && y < p.height / 2) toggleButton('Rt');
         // Rb button area
-        else if (x > p.width / 1.805 && x < p.width && y > p.height / 2 && y < p.height) handleClick('Rb');
+        else if (x > p.width / 1.805 && x < p.width && y > p.height / 2 && y < p.height) toggleButton('Rb');
     };
 
-    // Function to handle button clicks
-    function handleClick(buttonName) {
-        // If this button is already on, do nothing
-        if (buttonStates[buttonName]) return;
+    // Helper function to toggle buttons and track clicks
+    function toggleButton(buttonName) {
+        // Add clicked button to list (even if it is already permanently on)
+        if (!clickedButtons.includes(buttonName)) {
+            clickedButtons.push(buttonName);
+        }
 
-        // Add this button to the clicked list
-        clickedButtons.push(buttonName);
-
-        // If two buttons are clicked, turn them both on and draw the connector
+        // If two buttons are clicked, connect them and make any non-permanently on buttons stay on
         if (clickedButtons.length === 2) {
             let [first, second] = clickedButtons;
 
-            // Turn on both buttons
-            buttonStates[first] = true;
-            buttonStates[second] = true;
+            // Ensure both buttons are set to stay on permanently
+            if (!permanentlyOn.includes(first)) {
+                permanentlyOn.push(first);
+            }
+            if (!permanentlyOn.includes(second)) {
+                permanentlyOn.push(second);
+            }
 
-            // Draw the connector between the two buttons
-            connectors.push({ start: first, end: second });
+            // Show the connector between the two clicked buttons
+            showConnector(first, second);
 
-            // Reset clicked buttons for the next pair
+            // Clear clickedButtons to allow for new button pairs
             clickedButtons = [];
         }
     }
 
-    // Function to draw buttons (either on or off state)
-    function drawButton(buttonName, x, y, w, h, offImage, onImage) {
-        if (buttonStates[buttonName]) {
-            p.image(onImage, x, y, w, h);  // Draw "on" state
-        } else {
-            p.image(offImage, x, y, w, h); // Draw "off" state
-        }
-    }
-
-    // Function to draw the connector line between two buttons
-    function drawConnector(start, end) {
-        let startPos = getButtonPosition(start);
-        let endPos = getButtonPosition(end);
-
-        p.stroke(255);  // White connector line
-        p.strokeWeight(3);
-        p.line(startPos.x, startPos.y, endPos.x, endPos.y);
-    }
-
-    // Get the center position of a button for drawing connectors
-    function getButtonPosition(buttonName) {
-        switch (buttonName) {
-            case 'Lt':
-                return { x: 3 + p.width / 6, y: p.height / 4 };
-            case 'Lb':
-                return { x: p.width / 4, y: p.height * 3 / 4 };
-            case 'Mid':
-                return { x: p.width / 2, y: p.height / 2 };
-            case 'Rt':
-                return { x: p.width * 5 / 6, y: p.height / 4 };
-            case 'Rb':
-                return { x: p.width * 3 / 4, y: p.height * 3 / 4 };
-        }
+    // Function to show the correct alphabet connector
+    function showConnector(first, second) {
+        if ((first === 'Lt' && second === 'Rt') || (first === 'Rt' && second === 'Lt')) showAlphabet.a = true;
+        if ((first === 'Lt' && second === 'Mid') || (first === 'Mid' && second === 'Lt')) showAlphabet.b = true;
+        if ((first === 'Lt' && second === 'Lb') || (first === 'Lb' && second === 'Lt')) showAlphabet.c = true;
+        if ((first === 'Lt' && second === 'Rb') || (first === 'Rb' && second === 'Lt')) showAlphabet.d = true;
+        if ((first === 'Rt' && second === 'Mid') || (first === 'Mid' && second === 'Rt')) showAlphabet.e = true;
+        if ((first === 'Rt' && second === 'Rb') || (first === 'Rb' && second === 'Rt')) showAlphabet.f = true;
+        if ((first === 'Rt' && second === 'Lb') || (first === 'Lb' && second === 'Rt')) showAlphabet.g = true;
+        if ((first === 'Mid' && second === 'Lb') || (first === 'Lb' && second === 'Mid')) showAlphabet.h = true;
+        if ((first === 'Mid' && second === 'Rb') || (first === 'Rb' && second === 'Mid')) showAlphabet.i = true;
+        if ((first === 'Rb' && second === 'Lb') || (first === 'Lb' && second === 'Rb')) showAlphabet.j = true;
     }
 };
