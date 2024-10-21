@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi Page Sketch</title>
+
+  <!-- Include the p5.js library -->
+  <script src="libraries/p5.min.js"></script>
+
+  <!-- Load all scripts in order -->
+  <script src="Project1.js"></script>
+  <script src="second_page.js"></script>
+  <script src="Light.js"></script>
+
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+    <script>
+        // Initialize the first sketch
+        var activeSketch = new p5(project1);
+    </script>
+</body>
+</html>
+
+
+<!--starting from light.js part and active sketch, the code is helped by chat gpt-->
