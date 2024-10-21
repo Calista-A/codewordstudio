@@ -5,9 +5,7 @@ var secondPage = function(p) {
 
     p.preload = function() {
         secondPageGif = p.createImg('./data/IMG_2004.GIF');
-         if (!bgSound) {
             bgSound = p.loadSound('./data/bg.wav');
-        }
     };
 
     p.setup = function() {
@@ -28,7 +26,7 @@ var secondPage = function(p) {
         playStopButton.style('cursor', 'pointer');
         playStopButton.style('background-color', 'grey');  
         playStopButton.style('border', 'none');  // Remove button border
-        playStopButton.position(20, p.height - 40);  // Bottom left corner
+        playStopButton.position(20, p.height - 30);  // Bottom left corner
 
         // Toggle play/stop functionality
         playStopButton.mousePressed(function() {
@@ -74,4 +72,6 @@ var secondPage = function(p) {
 }
 
 //whole code was copied from chat gpt for debugging
-//with own changes for the textSize, Gif & arrowButton and copied function and setup from Project1.js file
+//with own changes for the textSize
+//Gif & arrowButton and copied function and setup from Project1.js file
+//sound copied from project1.js, altered
